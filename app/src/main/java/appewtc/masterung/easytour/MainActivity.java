@@ -1,5 +1,8 @@
 package appewtc.masterung.easytour;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -65,11 +68,96 @@ public class MainActivity extends AppCompatActivity {
         } else {
 
             //No Space
+            checkUser();
 
         }   // if
 
 
     }   //clickLogin
+
+    private void checkUser() {
+
+        try {
+
+            String[] myResultStrings = objMyManageTable.searchUser(userString);
+
+            //Check Password
+            checkPassword(myResultStrings[2], myResultStrings[3], myResultStrings[4]);
+
+            Log.d("tour", "pass ==> " + myResultStrings[2]);
+
+        } catch (Exception e) {
+            MyAlertDialog objMyAlertDialog = new MyAlertDialog();
+            objMyAlertDialog.myDialog(MainActivity.this, "No This User",
+                    "No " + userString + " in my Database");
+        }
+
+    }   //checkUser
+
+    private void checkPassword(String strPassword, String strName, String strStatus) {
+
+        if (passwordString.equals(strPassword)) {
+
+            welcome(strName, strStatus);
+
+        } else {
+
+            MyAlertDialog objMyAlertDialog = new MyAlertDialog();
+            objMyAlertDialog.myDialog(MainActivity.this, "Password False",
+                    "Please Try Again Password False");
+
+        } //if
+
+    }   // checkPassword
+
+    private void welcome(final String strName, final String strStatus) {
+
+        AlertDialog.Builder objBuilder = new AlertDialog.Builder(this);
+        objBuilder.setIcon(R.drawable.icon_myaccount);
+        objBuilder.setTitle("Welcome");
+        objBuilder.setMessage("ยินดีต้อนรับ คุณ" + strName + "\n" + checkPosition(strStatus));
+        objBuilder.setCancelable(false);
+        objBuilder.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                Intent objIntent = new Intent(MainActivity.this, HubServiceActivity.class);
+                objIntent.putExtra("Name", strName);
+                objIntent.putExtra("Status", strStatus);
+                startActivity(objIntent);
+                finish();
+
+            }   //event
+        });
+        objBuilder.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                userEditText.setText("");
+                passwordEditText.setText("");
+                dialogInterface.dismiss();
+            }
+        });
+        objBuilder.show();
+
+    }   // welcome
+
+    private String checkPosition(String strStatus) {
+
+        int intStatus = Integer.parseInt(strStatus);
+        String strPosition = null;
+
+        switch (intStatus) {
+            case 0:
+                strPosition = "สถานะ : นักท่องเที่ยว";
+                break;
+            case 1:
+                strPosition = "สถานะ : มัคคุเทศ";
+                break;
+        }
+
+
+        return strPosition;
+    }
 
     private void bindWidget() {
         userEditText = (EditText) findViewById(R.id.editText);
