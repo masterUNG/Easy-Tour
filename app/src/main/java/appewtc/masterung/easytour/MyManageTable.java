@@ -1,5 +1,6 @@
 package appewtc.masterung.easytour;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -33,9 +34,13 @@ public class MyManageTable {
                         String strName,
                         String strStatus) {
 
+        ContentValues objContentValues = new ContentValues();
+        objContentValues.put(column_user, strUser);
+        objContentValues.put(column_password, strPassword);
+        objContentValues.put(column_name, strName);
+        objContentValues.put(column_status, strStatus);
 
-
-        return 0;
+        return writeSqLiteDatabase.insert(table_user, null, objContentValues);
     }
 
 
