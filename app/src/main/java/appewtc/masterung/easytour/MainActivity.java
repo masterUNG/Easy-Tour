@@ -50,8 +50,15 @@ public class MainActivity extends AppCompatActivity {
         //Synchronize JSON to SQLite
         synJSONtoSQLite();
 
+        //Get Location
+        getLocation();
+
 
     }   // Main Method
+
+    private void getLocation() {
+
+    }   // getLocation
 
     public void clickLogin(View view) {
 
