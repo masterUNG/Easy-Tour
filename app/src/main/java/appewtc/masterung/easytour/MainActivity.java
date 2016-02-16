@@ -4,9 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -121,10 +121,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                Intent objIntent = new Intent(MainActivity.this, HubServiceActivity.class);
-                objIntent.putExtra("Name", strName);
-                objIntent.putExtra("Status", strStatus);
-                startActivity(objIntent);
+//                Intent objIntent = new Intent(MainActivity.this, HubServiceActivity.class);
+//                objIntent.putExtra("Name", strName);
+//                objIntent.putExtra("Status", strStatus);
+//                startActivity(objIntent);
+//                finish();
+
+                switch (Integer.parseInt(strStatus)) {
+                    case 1:
+                        Intent adminIntent = new Intent(MainActivity.this, HubServiceActivity.class);
+                        adminIntent.putExtra("Name", strName);
+                        startActivity(adminIntent);
+                        break;
+                    case 0:
+                        Intent tourIntent = new Intent(MainActivity.this, HubTourActivity.class);
+                        tourIntent.putExtra("Name", strName);
+                        startActivity(tourIntent);
+                        break;
+                }
                 finish();
 
             }   //event
