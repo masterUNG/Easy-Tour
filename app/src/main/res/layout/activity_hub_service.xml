@@ -7,12 +7,56 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="appewtc.masterung.easytour.HubServiceActivity">
+    tools:context="appewtc.masterung.easytour.HubServiceActivity"
+    android:background="@drawable/bg25">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Service"
+        android:text="New Text"
         android:id="@+id/textView2"
-        android:textSize="30sp" />
+        android:textSize="@dimen/h1" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="@dimen/my_button"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/authen"
+            android:id="@+id/button2" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/listuser"
+            android:id="@+id/button3" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/warning"
+            android:id="@+id/button4" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tracking"
+            android:id="@+id/button5" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/recommend"
+            android:id="@+id/button6" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/listuser"
+            android:id="@+id/button7" />
+    </LinearLayout>
 </RelativeLayout>
