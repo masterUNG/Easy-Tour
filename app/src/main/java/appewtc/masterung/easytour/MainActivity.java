@@ -1,9 +1,16 @@
 package appewtc.masterung.easytour;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
     private MyManageTable objMyManageTable;
     private EditText userEditText, passwordEditText;
     private String userString, passwordString;
+    private LocationManager objLocationManager;
+    private Criteria objCriteria;
+    private boolean GPSABoolean, networkABoolean;
+    private double latADouble, lngADouble;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +67,71 @@ public class MainActivity extends AppCompatActivity {
 
     }   // Main Method
 
+    public Location requestLocation(String strProvider, String strError) {
+
+        Location objLocation = null;
+
+        if (objLocationManager.isProviderEnabled(strProvider)) {
+
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    Activity#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for Activity#requestPermissions for more details.
+                return null;
+            }
+            objLocationManager.requestLocationUpdates(strProvider, 1000, 10, objLocationListener);
+            objLocation = objLocationManager.getLastKnownLocation(strProvider);
+
+        } else {
+            Log.d("Tour", strError);
+        }   // if
+
+        return objLocation;
+    }
+
+    private int checkSelfPermission(String accessFineLocation) {
+        return 0;
+    }
+
+    //Create Class
+    public final LocationListener objLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            latADouble = location.getLatitude();
+            lngADouble = location.getLongitude();
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+
+
     private void getLocation() {
+
+        //Open Service
+        objLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        objCriteria = new Criteria();
+        objCriteria.setAccuracy(Criteria.ACCURACY_FINE);
+        objCriteria.setAltitudeRequired(false);
+        objCriteria.setBearingRequired(false);
+
 
     }   // getLocation
 
