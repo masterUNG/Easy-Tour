@@ -1,11 +1,13 @@
 package appewtc.masterung.easytour;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class HubServiceActivity extends AppCompatActivity {
+public class HubServiceActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Explicit
     private TextView showNameTextView;
@@ -38,7 +40,12 @@ public class HubServiceActivity extends AppCompatActivity {
 
     private void buttonController() {
 
-
+        authenButton.setOnClickListener(this);
+        listuserButton.setOnClickListener(this);
+        warnButton.setOnClickListener(this);
+        trackButton.setOnClickListener(this);
+        recommentButton.setOnClickListener(this);
+        listTourButton.setOnClickListener(this);
 
     }   // buttonController
 
@@ -53,5 +60,31 @@ public class HubServiceActivity extends AppCompatActivity {
         listTourButton = (Button) findViewById(R.id.button7);
 
     }   // bindWidget
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.button2:
+
+                Intent authenIntent = new Intent(HubServiceActivity.this, RegisterActivity.class);
+                startActivity(authenIntent);
+
+                break;
+            case R.id.button3:
+                break;
+            case R.id.button4:
+                break;
+            case R.id.button5:
+                break;
+            case R.id.button6:
+                break;
+            case R.id.button7:
+                break;
+        }   // switch
+
+    }   // onClick
+
+
 
 }   // Main Class
