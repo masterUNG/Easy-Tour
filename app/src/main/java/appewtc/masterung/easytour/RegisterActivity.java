@@ -55,6 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
 
                     //No Space
+                    checkUser();
 
                 }   // if
 
@@ -62,6 +63,28 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }   // buttonController
+
+    private void checkUser() {
+
+        try {
+            //User not OK
+            MyManageTable objMyManageTable = new MyManageTable(this);
+            String[] resultStrings = objMyManageTable.searchUser(userString);
+
+            MyAlertDialog objMyAlertDialog = new MyAlertDialog();
+            objMyAlertDialog.myDialog(RegisterActivity.this, "User ซ้ำ",
+                    "เปลี่ยน user ใหม่มี " + resultStrings[1] + " แล้ว");
+
+        } catch (Exception e) {
+            //User OK
+            confirmRegis();
+        }
+
+    }   // checkUser
+
+    private void confirmRegis() {
+
+    }   // confirmRegis
 
     private boolean checkSpace() {
         return userString.equals("") || passwordString.equals("") || nameString.equals("");
