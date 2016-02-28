@@ -14,6 +14,8 @@ public class HubServiceActivity extends AppCompatActivity implements View.OnClic
     private Button authenButton, listuserButton, warnButton, trackButton,
             recommentButton, listTourButton;
     private String nameString;
+    private static final double centerLat = 14.47723421;
+    private static final double centerLng = 100.64575195;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

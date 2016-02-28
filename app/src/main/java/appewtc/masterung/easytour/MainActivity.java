@@ -253,23 +253,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-//                Intent objIntent = new Intent(MainActivity.this, HubServiceActivity.class);
-//                objIntent.putExtra("Name", strName);
-//                objIntent.putExtra("Status", strStatus);
-//                startActivity(objIntent);
-//                finish();
-
                 switch (Integer.parseInt(strStatus)) {
-                    case 1:
-                        Intent adminIntent = new Intent(MainActivity.this, HubServiceActivity.class);
-                        adminIntent.putExtra("Name", strName);
-                        startActivity(adminIntent);
-                        break;
+
                     case 0:
                         Intent tourIntent = new Intent(MainActivity.this, HubTourActivity.class);
                         tourIntent.putExtra("Name", strName);
+                        tourIntent.putExtra("Lat", latADouble);
+                        tourIntent.putExtra("Lng", lngADouble);
                         startActivity(tourIntent);
                         break;
+
+                    case 1:
+                        Intent adminIntent = new Intent(MainActivity.this, HubServiceActivity.class);
+                        adminIntent.putExtra("Name", strName);
+                        adminIntent.putExtra("Lat", latADouble);
+                        adminIntent.putExtra("Lng", lngADouble);
+                        startActivity(adminIntent);
+                        break;
+
                 }
                 finish();
 
@@ -319,11 +320,12 @@ public class MainActivity extends AppCompatActivity {
 
         int intTABLE = 1; //Amount of TABLE
         String tag = "tour";
-        while (intTABLE <= 1) {
+        while (intTABLE <= 2) {
 
             //1.Create InputStream
             InputStream objInputStream = null;
             String strURLuser = "http://swiftcodingthai.com/puk/php_get_user_master.php";
+            String strURLtour = "http://swiftcodingthai.com/puk/php_get_tour_master.php";
             HttpPost objHttpPost = null;
 
             try {
@@ -332,6 +334,9 @@ public class MainActivity extends AppCompatActivity {
                 switch (intTABLE) {
                     case 1:
                         objHttpPost = new HttpPost(strURLuser);
+                        break;
+                    case 2:
+                        objHttpPost = new HttpPost(strURLtour);
                         break;
                 }   //switch
                 HttpResponse objHttpResponse = objHttpClient.execute(objHttpPost);
@@ -381,6 +386,21 @@ public class MainActivity extends AppCompatActivity {
                             objMyManageTable.addUser(strUser, strPassword, strName, strStatus);
 
                             break;
+                        case 2:
+
+                            //For tourTABLE
+                            String strCategory = object.getString(MyManageTable.column_Category);
+                            String strNameTour = object.getString(MyManageTable.column_name);
+                            String strDescription = object.getString(MyManageTable.column_Description);
+                            String strType = object.getString(MyManageTable.column_Type);
+                            String strTimeUse = object.getString(MyManageTable.column_TimeUse);
+                            String strLat = object.getString(MyManageTable.column_Lat);
+                            String strLng = object.getString(MyManageTable.column_Lng);
+
+                            objMyManageTable.addTour(strCategory, strNameTour, strDescription,
+                                    strType, strTimeUse, strLat, strLng);
+
+                            break;
                     } //switch
                 }   // for
 
@@ -398,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase objSqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
                 MODE_PRIVATE, null);
         objSqLiteDatabase.delete(MyManageTable.table_user, null, null);
+        objSqLiteDatabase.delete(MyManageTable.table_tour, null, null);
     }
 
     private void testAddValue() {
