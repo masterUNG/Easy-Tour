@@ -1,11 +1,9 @@
 package appewtc.masterung.easytour;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
@@ -17,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -67,22 +66,68 @@ public class MainActivity extends AppCompatActivity {
 
     }   // Main Method
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        objLocationManager.removeUpdates(objLocationListener);
+        latADouble = 0;
+        lngADouble = 0;
+
+        Location networkLocation = requestLocation(LocationManager.NETWORK_PROVIDER, "No Internet");
+
+        if (networkLocation != null) {
+            latADouble = networkLocation.getLatitude();
+            lngADouble = networkLocation.getLongitude();
+        }   // if
+
+        Location GPSLocation = requestLocation(LocationManager.GPS_PROVIDER, "No GPS card");
+
+        if (GPSLocation != null) {
+            latADouble = GPSLocation.getLatitude();
+            lngADouble = GPSLocation.getLongitude();
+        }   // if
+
+        //Show Log
+        Log.d("easyTour", "Lat ==> " + latADouble);
+        Log.d("easyTour", "Lng ==> " + lngADouble);
+
+    }   // onResume
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        GPSABoolean = objLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); // มี Card GPS จะเป็น True
+
+        if (!GPSABoolean) {
+
+            networkABoolean = objLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!networkABoolean) {
+
+                Toast.makeText(MainActivity.this, "ไม่สามารถหาพิกัดได้", Toast.LENGTH_SHORT).show();
+
+            }   // if
+
+        }   // if
+
+    }   // onStart
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        objLocationManager.removeUpdates(objLocationListener);
+
+    }
+
     public Location requestLocation(String strProvider, String strError) {
 
         Location objLocation = null;
 
         if (objLocationManager.isProviderEnabled(strProvider)) {
 
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
-                return null;
-            }
             objLocationManager.requestLocationUpdates(strProvider, 1000, 10, objLocationListener);
             objLocation = objLocationManager.getLastKnownLocation(strProvider);
 
@@ -103,6 +148,11 @@ public class MainActivity extends AppCompatActivity {
         public void onLocationChanged(Location location) {
             latADouble = location.getLatitude();
             lngADouble = location.getLongitude();
+
+            //Show Log
+            Log.d("easyTour", "Lat ==> " + latADouble);
+            Log.d("easyTour", "Lng ==> " + lngADouble);
+
         }
 
         @Override
