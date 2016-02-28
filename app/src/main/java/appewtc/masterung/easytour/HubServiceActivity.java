@@ -3,6 +3,7 @@ package appewtc.masterung.easytour;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,6 +26,9 @@ public class HubServiceActivity extends AppCompatActivity implements View.OnClic
         //Bind Widget
         bindWidget();
 
+        //Check Section
+        checkSection();
+
         //Show Name
         showName();
 
@@ -32,6 +36,18 @@ public class HubServiceActivity extends AppCompatActivity implements View.OnClic
         buttonController();
 
     }   // Main Method
+
+    private void checkSection() {
+
+        String tag = "Section";
+
+        double myLat = getIntent().getDoubleExtra("Lat", 0);
+        double myLng = getIntent().getDoubleExtra("Lng", 0);
+
+        Log.d(tag, "myLat ==> " + myLat);
+        Log.d(tag, "myLng ==> " + myLng);
+
+    }   // checkSection
 
     private void showName() {
 
