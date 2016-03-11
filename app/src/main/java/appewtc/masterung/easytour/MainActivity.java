@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
             //1.Create InputStream
             InputStream objInputStream = null;
             String strURLuser = "http://swiftcodingthai.com/puk/php_get_user_master.php";
-            String strURLtour = "http://swiftcodingthai.com/puk/php_get_tour_master.php";
+            String strURLtour = "http://swiftcodingthai.com/puk/php_get_tour_buk.php";
             HttpPost objHttpPost = null;
 
             try {
@@ -391,13 +391,14 @@ public class MainActivity extends AppCompatActivity {
                             //For tourTABLE
                             String strCategory = object.getString(MyManageTable.column_Category);
                             String strNameTour = object.getString(MyManageTable.column_name);
+                            String strProvince = object.getString(MyManageTable.column_Province);
                             String strDescription = object.getString(MyManageTable.column_Description);
                             String strType = object.getString(MyManageTable.column_Type);
                             String strTimeUse = object.getString(MyManageTable.column_TimeUse);
                             String strLat = object.getString(MyManageTable.column_Lat);
                             String strLng = object.getString(MyManageTable.column_Lng);
 
-                            objMyManageTable.addTour(strCategory, strNameTour, strDescription,
+                            objMyManageTable.addTour(strCategory, strNameTour, strProvince, strDescription,
                                     strType, strTimeUse, strLat, strLng);
 
                             break;
