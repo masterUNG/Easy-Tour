@@ -1,5 +1,7 @@
 package appewtc.masterung.easytour;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +42,31 @@ public class ShowProgramTourActivity extends AppCompatActivity {
 
         showCatTextView.setText(getResources().getString(R.string.listtour) + " " + categoryString);
 
+        //Read All Where
+        SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
+                MODE_PRIVATE, null);
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM tourTABLE WHERE Category = " + "'" + categoryString + "'", null);
+        cursor.moveToFirst();
+
+        int intCount = cursor.getCount();
+
+        String[] nameStrings = new String[intCount];
+        String[] provinceStrings = new String[intCount];
+        String[] timeUseStrings = new String[intCount];
+
+        for (int i = 0; i < intCount; i++) {
+
+            nameStrings[i] = cursor.getString(cursor.getColumnIndex(MyManageTable.column_name));
+            provinceStrings[i] = cursor.getString(cursor.getColumnIndex(MyManageTable.column_Province));
+            timeUseStrings[i] = cursor.getString(cursor.getColumnIndex(MyManageTable.column_TimeUse));
+
+            cursor.moveToNext();
+        }   //for
+        cursor.close();
+
+        TourAdapter tourAdapter = new TourAdapter(ShowProgramTourActivity.this,
+                nameStrings, provinceStrings, timeUseStrings);
+        tourListView.setAdapter(tourAdapter);
 
 
     }   // showView
