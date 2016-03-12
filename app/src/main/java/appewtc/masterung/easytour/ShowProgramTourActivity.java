@@ -26,29 +26,27 @@ public class ShowProgramTourActivity extends AppCompatActivity {
         userLatADouble = getIntent().getDoubleExtra("Lat", HubServiceActivity.centerLat);
         userLngADouble = getIntent().getDoubleExtra("Lng", HubServiceActivity.centerLng);
 
-        if (userLngADouble < HubServiceActivity.centerLng) {
-            //North
-            if (userLatADouble > HubServiceActivity.centerLat) {
-                //NE
+        if (userLatADouble > HubServiceActivity.centerLat) {
+            //N
+            if (userLngADouble > HubServiceActivity.centerLng) {
+                //E
                 categoryString = "NE";
             } else {
-                //NW
+                //W
                 categoryString = "NW";
             }
-
         } else {
-            //South
-            if (userLatADouble > HubServiceActivity.centerLat) {
-                //SE
+            //S
+            if (userLngADouble > HubServiceActivity.centerLng) {
+                //E
                 categoryString = "SE";
             } else {
-                //SW
+                //W
                 categoryString = "SW";
             }
+        }
 
-        } // if1
-
-        Log.d("11March", "categoryString = " + categoryString);
+        Log.d("12March", "categoryString = " + categoryString);
 
     }   // receiveAndSep
 
