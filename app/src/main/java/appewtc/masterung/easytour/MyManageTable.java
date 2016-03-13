@@ -31,6 +31,11 @@ public class MyManageTable {
     public static final String column_Lng = "Lng";
     public static final String column_Province = "Province";
 
+    public static final String table_my_tour = "myTourTABLE";
+    public static final String column_DateStart = "DateStart";
+    public static final String column_HrStart = "HrStart";
+    public static final String column_HrEnd = "HrEnd";
+
     public MyManageTable(Context context) {
 
         //Create & Connected
@@ -39,6 +44,23 @@ public class MyManageTable {
         readSqLiteDatabase = objMyOpenHelper.getReadableDatabase();
 
     }   // Constructor
+
+    public long addMyTour(String strName,
+                          String strTimeUse,
+                          String strDateStart,
+                          String strHrStart,
+                          String strHrEnd) {
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(column_name, strName);
+        contentValues.put(column_TimeUse, strTimeUse);
+        contentValues.put(column_DateStart, strDateStart);
+        contentValues.put(column_HrStart, strHrStart);
+        contentValues.put(column_HrEnd, strHrEnd);
+
+        return writeSqLiteDatabase.insert(table_my_tour, null, contentValues);
+    }
+
 
     public long addTour(String strCategory,
                         String strName,

@@ -30,6 +30,14 @@ public class MyOpenHelper extends SQLiteOpenHelper{
             "Lat text, " +
             "Lng text);";
 
+    private static final String create_my_tour_table = "create table myTourTABLE (" +
+            "_id integer primary key, " +
+            "Name text, " +
+            "TimeUse text, " +
+            "DateStart text, " +
+            "HrStart text, " +
+            "HrEnd text);";
+
     public MyOpenHelper(Context context) {
         super(context, database_name, null, database_version);
     }   // Constructor
@@ -38,6 +46,7 @@ public class MyOpenHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(create_user_table);
         db.execSQL(create_tour_table);
+        db.execSQL(create_my_tour_table);
     }
 
     @Override
