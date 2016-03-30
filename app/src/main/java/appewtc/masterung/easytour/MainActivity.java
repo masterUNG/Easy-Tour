@@ -274,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                         tourIntent.putExtra("Name", strName);
                         tourIntent.putExtra("Lat", latADouble);
                         tourIntent.putExtra("Lng", lngADouble);
+                        tourIntent.putExtra("meID", meIDString);
                         startActivity(tourIntent);
                         break;
 
@@ -282,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
                         adminIntent.putExtra("Name", strName);
                         adminIntent.putExtra("Lat", latADouble);
                         adminIntent.putExtra("Lng", lngADouble);
+                        adminIntent.putExtra("meID", meIDString);
                         startActivity(adminIntent);
                         break;
 

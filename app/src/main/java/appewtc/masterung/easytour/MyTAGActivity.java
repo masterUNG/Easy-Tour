@@ -7,6 +7,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,6 +20,15 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+
 public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -29,6 +39,8 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
     private Criteria objCriteria;
     private boolean GPSABoolean, networkABoolean;
     private double latADouble, lngADouble;
+    private String meIDString;
+
 
 
     @Override
@@ -56,7 +68,7 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
     protected void onResume() {
         super.onResume();
 
-        objLocationManager.removeUpdates(objLocationListener);
+        objLocationManager.removeUpdates(objLocationListener1);
         latADouble = 0;
         lngADouble = 0;
 
@@ -104,7 +116,7 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
     protected void onStop() {
         super.onStop();
 
-        objLocationManager.removeUpdates(objLocationListener);
+        objLocationManager.removeUpdates(objLocationListener1);
 
     }
 
@@ -115,7 +127,7 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
         if (objLocationManager.isProviderEnabled(strProvider)) {
 
-            objLocationManager.requestLocationUpdates(strProvider, 1000, 10, objLocationListener);
+            objLocationManager.requestLocationUpdates(strProvider, 1000, 10, objLocationListener1);
             objLocation = objLocationManager.getLastKnownLocation(strProvider);
 
         } else {
@@ -127,7 +139,7 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
     //Create Class
-    public final LocationListener objLocationListener = new LocationListener() {
+    public final LocationListener objLocationListener1 = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             latADouble = location.getLatitude();
@@ -178,6 +190,7 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
     private void getLatLngFormIntent() {
         meLatADouble = getIntent().getDoubleExtra("Lat", 14.47723421);
         meLngADouble = getIntent().getDoubleExtra("Lng", 100.64575195);
+        meIDString = getIntent().getStringExtra("meID");
     }
 
 
@@ -197,8 +210,13 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
     private void myLoopCrateMarker() {
 
+        Log.d("31March", "meID ==> " + meIDString);
         Log.d("31March", "Lat ==> " + latADouble);
         Log.d("31March", "Lng ==> " + lngADouble);
+
+        updateValueToMySQL(meIDString,
+                Double.toString(latADouble),
+                Double.toString(lngADouble));
 
         meLatLng = new LatLng(latADouble, lngADouble);
 
@@ -216,6 +234,34 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
     }   // myLoop
+
+    private void updateValueToMySQL(String meIDString, String strLat, String strLng) {
+
+        //Connected Http
+        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy
+                .Builder().permitAll().build();
+        StrictMode.setThreadPolicy(threadPolicy);
+
+        try {
+
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("isAdd", "true"));
+            nameValuePairs.add(new BasicNameValuePair("id", meIDString));
+            nameValuePairs.add(new BasicNameValuePair("Lat", strLat));
+            nameValuePairs.add(new BasicNameValuePair("Lng", strLng));
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://swiftcodingthai.com/puk/php_edit_location_master.php");
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+            httpClient.execute(httpPost);
+
+        } catch (Exception e) {
+            Log.d("31March", "Error Update ==> " + e.toString());
+        }
+
+
+
+    }   // update
 
     private void createMarkerMe() {
 
