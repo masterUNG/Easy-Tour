@@ -2,6 +2,7 @@ package appewtc.masterung.easytour;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -9,7 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ShowDetailTourActivity extends AppCompatActivity {
+public class ShowDetailTourActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Explicit
     private TextView dateTextView, nameTextView, provinceTextView,
@@ -32,8 +33,17 @@ public class ShowDetailTourActivity extends AppCompatActivity {
         //Show TextView
         showTextView();
 
+        //Button Controller
+        buttonController();
+
 
     }   // Main Method
+
+    private void buttonController() {
+        setTimeButton.setOnClickListener(this);
+        addMyProgramButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+    }
 
     private void showTextView() {
 
@@ -79,5 +89,23 @@ public class ShowDetailTourActivity extends AppCompatActivity {
 
 
     }   // bindWidget
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.button9:
+                //Set Time
+                break;
+            case R.id.button10:
+                //Add My Program
+                break;
+            case R.id.button11:
+                //Cancel
+                finish();
+                break;
+        }   // switch
+
+    }   // onClick
 
 }   // Main Class

@@ -99,6 +99,12 @@ public class HubServiceActivity extends AppCompatActivity implements View.OnClic
 
                 break;
             case R.id.button4:
+
+                Intent intent1 = new Intent(HubServiceActivity.this, MyTAGActivity.class);
+                intent1.putExtra("Lat", myLat);
+                intent1.putExtra("Lng", myLng);
+                startActivity(intent1);
+
                 break;
             case R.id.button5:
                 break;
