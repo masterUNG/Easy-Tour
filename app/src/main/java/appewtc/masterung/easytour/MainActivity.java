@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private Criteria objCriteria;
     private boolean GPSABoolean, networkABoolean;
     private double latADouble, lngADouble;
+    private String meIDString = "0";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
         getLocation();
 
 
+
+
     }   // Main Method
+
+
 
     @Override
     protected void onResume() {
@@ -169,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         public void onProviderDisabled(String s) {
 
         }
-    };
+    };  // class
 
 
 
@@ -213,6 +220,10 @@ public class MainActivity extends AppCompatActivity {
 
             String[] myResultStrings = objMyManageTable.searchUser(userString);
 
+            meIDString = myResultStrings[0];
+            Log.d("30March", "meIDString ==> " + meIDString);
+
+
             //Check Password
             checkPassword(myResultStrings[2], myResultStrings[3], myResultStrings[4]);
 
@@ -253,6 +264,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
+
+
+
                 switch (Integer.parseInt(strStatus)) {
 
                     case 0:
@@ -272,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                 }
-                finish();
+               // finish();
 
             }   //event
         });
