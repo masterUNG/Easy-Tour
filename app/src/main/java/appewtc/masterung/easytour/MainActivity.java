@@ -398,8 +398,11 @@ public class MainActivity extends AppCompatActivity {
                             String strPassword = object.getString(MyManageTable.column_password);
                             String strName = object.getString(MyManageTable.column_name);
                             String strStatus = object.getString(MyManageTable.column_status);
+                            String strLat1 = object.getString(MyManageTable.column_Lat);
+                            String strLng1 = object.getString(MyManageTable.column_Lng);
 
-                            objMyManageTable.addUser(strUser, strPassword, strName, strStatus);
+                            objMyManageTable.addUser(strUser, strPassword,
+                                    strName, strStatus, strLat1, strLng1);
 
                             break;
                         case 2:
@@ -439,7 +442,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void testAddValue() {
-        objMyManageTable.addUser("testUser", "testPass", "testName", "testStatus");
+        objMyManageTable.addUser("testUser", "testPass", "testName",
+                "testStatus", "Lat", "Lng");
     }
 
 }   // Main Class
