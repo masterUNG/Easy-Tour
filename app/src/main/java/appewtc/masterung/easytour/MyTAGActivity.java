@@ -1,6 +1,8 @@
 package appewtc.masterung.easytour;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,13 +22,20 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -40,7 +49,6 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
     private boolean GPSABoolean, networkABoolean;
     private double latADouble, lngADouble;
     private String meIDString;
-
 
 
     @Override
@@ -210,9 +218,29 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
     private void myLoopCrateMarker() {
 
-        Log.d("31March", "meID ==> " + meIDString);
-        Log.d("31March", "Lat ==> " + latADouble);
-        Log.d("31March", "Lng ==> " + lngADouble);
+        mMap.clear();
+
+        synUserTABLE();
+
+        //เอา LatLng ทั้งหมดมาแสดง (เฉพาะที่มี Status 0 เท่านั้น)
+        SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
+                MODE_PRIVATE, null);
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM userTABLE WHERE Status = 0", null);
+        cursor.moveToFirst();
+        int intCount = cursor.getCount();
+        Log.d("9April", "intCount ==> " + intCount);
+
+        for (int i=0;i<intCount;i++) {
+
+            String strName = cursor.getString(cursor.getColumnIndex(MyManageTable.column_name));
+            String strLat = cursor.getString(cursor.getColumnIndex(MyManageTable.column_Lat));
+            String strLng = cursor.getString(cursor.getColumnIndex(MyManageTable.column_Lng));
+
+            createMarkerUser(strName, strLat, strLng);
+
+            cursor.moveToNext();
+        }   // for
+
 
         updateValueToMySQL(meIDString,
                 Double.toString(latADouble),
@@ -220,7 +248,7 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
         meLatLng = new LatLng(latADouble, lngADouble);
 
-        mMap.clear();
+
 
         createMarkerMe();
 
@@ -234,6 +262,88 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
     }   // myLoop
+
+    private void createMarkerUser(String strName, String strLat, String strLng) {
+
+        double douLat = Double.parseDouble(strLat);
+        double douLng = Double.parseDouble(strLng);
+
+        LatLng latLng = new LatLng(douLat, douLng);
+        mMap.addMarker(new MarkerOptions()
+        .position(latLng)
+        .title(strName));
+
+    }   // createMarkerUser
+
+    private void synUserTABLE() {
+
+        //Delete userTABLE
+        SQLiteDatabase sqLiteDatabase = openOrCreateDatabase(MyOpenHelper.database_name,
+                MODE_PRIVATE, null);
+        sqLiteDatabase.delete(MyManageTable.table_user, null, null);
+
+        //Connected Http
+        StrictMode.ThreadPolicy threadPolicy = new StrictMode.ThreadPolicy
+                .Builder().permitAll().build();
+        StrictMode.setThreadPolicy(threadPolicy);
+
+
+        InputStream inputStream = null;
+        try {
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://swiftcodingthai.com/puk/php_get_user_master.php");
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            inputStream = httpEntity.getContent();
+
+        } catch (Exception e) {
+            Log.d("31March", "Input ==> " + e.toString());
+        }
+
+        String strJSON = null;
+        try {
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            StringBuilder stringBuilder = new StringBuilder();
+            String strLine = null;
+
+            while ((strLine = bufferedReader.readLine()) != null) {
+                stringBuilder.append(strLine);
+            }
+            inputStream.close();
+            strJSON = stringBuilder.toString();
+
+        } catch (Exception e) {
+            Log.d("31March", "strJSON ==> " + e.toString());
+        }
+
+        try {
+
+            JSONArray jsonArray = new JSONArray(strJSON);
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String strUser = jsonObject.getString(MyManageTable.column_user);
+                String strPassword = jsonObject.getString(MyManageTable.column_password);
+                String strName = jsonObject.getString(MyManageTable.column_name);
+                String strStatus = jsonObject.getString(MyManageTable.column_status);
+                String strLat = jsonObject.getString(MyManageTable.column_Lat);
+                String strLng = jsonObject.getString(MyManageTable.column_Lng);
+
+                MyManageTable myManageTable = new MyManageTable(this);
+                myManageTable.addUser(strUser, strPassword, strName, strStatus,
+                        strLat, strLng);
+
+            }
+
+
+        } catch (Exception e) {
+            Log.d("31March", "Update ==> " + e.toString());
+        }
+
+
+    }   // synUserTABLE
 
     private void updateValueToMySQL(String meIDString, String strLat, String strLng) {
 
@@ -258,7 +368,6 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
         } catch (Exception e) {
             Log.d("31March", "Error Update ==> " + e.toString());
         }
-
 
 
     }   // update
