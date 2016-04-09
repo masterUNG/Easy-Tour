@@ -69,8 +69,28 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
         //Get Location
         getLocation();
 
-
     }   // Main Method
+
+    //นี่คือ เมธอดที่ หาจุดระหว่างจุด
+    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515 * 1.609344 * 1000;
+
+
+        return (dist);
+    }
+
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
+    }
+
 
     @Override
     protected void onResume() {
@@ -230,7 +250,7 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
         int intCount = cursor.getCount();
         Log.d("9April", "intCount ==> " + intCount);
 
-        for (int i=0;i<intCount;i++) {
+        for (int i = 0; i < intCount; i++) {
 
             String strName = cursor.getString(cursor.getColumnIndex(MyManageTable.column_name));
             String strLat = cursor.getString(cursor.getColumnIndex(MyManageTable.column_Lat));
@@ -238,20 +258,28 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
             createMarkerUser(strName, strLat, strLng);
 
+            //Check Distance
+            double douLat2 = Double.parseDouble(strLat);
+            double douLng2 = Double.parseDouble(strLng);
+
+            double douDistance = distance(latADouble, lngADouble, douLat2, douLng2);
+            Log.d("9April", "douDistance[" + strName + "] ==> " + douDistance);
+
+
             cursor.moveToNext();
         }   // for
 
-
+        //เอาพิกัด ของ Admin ไปเก็บที่ Server
         updateValueToMySQL(meIDString,
                 Double.toString(latADouble),
                 Double.toString(lngADouble));
 
+        //กำหนด Marker ใหม่ ให้กับ Admin
         meLatLng = new LatLng(latADouble, lngADouble);
-
-
-
         createMarkerMe();
 
+
+        //หน่วงเวลา 3 วิ และ loop ไม่จบ
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -270,8 +298,8 @@ public class MyTAGActivity extends FragmentActivity implements OnMapReadyCallbac
 
         LatLng latLng = new LatLng(douLat, douLng);
         mMap.addMarker(new MarkerOptions()
-        .position(latLng)
-        .title(strName));
+                .position(latLng)
+                .title(strName));
 
     }   // createMarkerUser
 
