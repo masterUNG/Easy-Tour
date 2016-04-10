@@ -336,29 +336,26 @@ public class MainActivity extends AppCompatActivity {
 
         int intTABLE = 1; //Amount of TABLE
         String tag = "tour";
-        while (intTABLE <= 2) {
+
+        String[] urlStrings = {"0",
+                "http://swiftcodingthai.com/puk/php_get_user_master.php",
+                "http://swiftcodingthai.com/puk/php_get_tour_buk.php",
+                "http://swiftcodingthai.com/puk/php_get_mytour_buk.php"};
+
+        while (intTABLE <= 3) {
+
+            Log.d("dora10", "intTABLE ==> " + intTABLE);
 
             //1.Create InputStream
             InputStream objInputStream = null;
-            String strURLuser = "http://swiftcodingthai.com/puk/php_get_user_master.php";
-            String strURLtour = "http://swiftcodingthai.com/puk/php_get_tour_buk.php";
-            HttpPost objHttpPost = null;
 
             try {
 
                 HttpClient objHttpClient = new DefaultHttpClient();
-                switch (intTABLE) {
-                    case 1:
-                        objHttpPost = new HttpPost(strURLuser);
-                        break;
-                    case 2:
-                        objHttpPost = new HttpPost(strURLtour);
-                        break;
-                }   //switch
+                HttpPost objHttpPost = new HttpPost(urlStrings[intTABLE]);
                 HttpResponse objHttpResponse = objHttpClient.execute(objHttpPost);
                 HttpEntity objHttpEntity = objHttpResponse.getEntity();
                 objInputStream = objHttpEntity.getContent();
-
 
             } catch (Exception e) {
                 Log.d(tag, "InputStream ==> " + e.toString());
@@ -387,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
             try {
 
                 JSONArray objJsonArray = new JSONArray(strJSON);
-                for (int i=0;i<objJsonArray.length();i++) {
+                for (int i = 0; i < objJsonArray.length(); i++) {
 
                     JSONObject object = objJsonArray.getJSONObject(i);
                     switch (intTABLE) {
@@ -420,6 +417,18 @@ public class MainActivity extends AppCompatActivity {
                             objMyManageTable.addTour(strCategory, strNameTour, strProvince, strDescription,
                                     strType, strTimeUse, strLat, strLng);
 
+                            break;
+
+                        case 3:
+                            //for mytour table
+                            String strMyTourName = object.getString(MyManageTable.column_name);
+                            String strMyTimeUse = object.getString(MyManageTable.column_TimeUse);
+                            String strDateStart = object.getString(MyManageTable.column_DateStart);
+                            String strHrStart = object.getString(MyManageTable.column_HrStart);
+                            String strHrEnd = object.getString(MyManageTable.column_HrEnd);
+
+                            objMyManageTable.addMyTour(strMyTourName, strMyTimeUse, strDateStart, strHrStart, strHrEnd);
+                            Log.d("Dooo", strMyTourName);////////////////////////////////////////////////////////////////////
                             break;
                     } //switch
                 }   // for
